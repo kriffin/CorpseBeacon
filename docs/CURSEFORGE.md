@@ -21,7 +21,8 @@ You are a skinner. There is a dead tiger somewhere in the undergrowth. You know 
 
 ## What it does
 
-- **The Skinning icon above skinnable corpses, a bag above corpses that only hold loot** — round, inside a ring taken from the game's own art
+- **A bag while there is loot to take, the Skinning icon once the corpse is emptied and you can skin it** — round, inside a ring taken from the game's own art
+- **Only what you can actually do** — no Skinning profession, or a skill too low for that beast? The Skinning icon stays away
 - **Three ring styles** — gold, bronze or dragon; or pick the logo or any raid icon instead
 - **Already looted, still skinnable** — a corpse emptied of its loot keeps its beacon for as long as the game still offers it for skinning
 - **A sound when a corpse is found**, picked from 18 game sounds
@@ -55,7 +56,6 @@ Type `/cb`, or open Options → AddOns → Corpse Beacon.
 - The corpse has to be **on screen**
 - The range slider goes up to 100 yards, but the game decides the real limit; expect a few dozen yards
 - No arrow, no map pin: the game gives addons no position for a corpse
-- Behaviour **while you are in combat** has not been verified yet: the icon may only appear once the fight is over
 
 ---
 

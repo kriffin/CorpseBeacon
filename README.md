@@ -10,7 +10,8 @@ A World of Warcraft addon for skinners: it puts a large icon above the nearest c
 
 ## What it does
 
-- **One corpse, clearly marked** — the nearest corpse the game lets you interact with gets an icon above it, round, inside a ring taken from the game's own art (gold, bronze or dragon): the Skinning icon when it is skinnable, a bag when it only holds loot.
+- **One corpse, clearly marked** — the nearest corpse the game lets you interact with gets an icon above it, round, inside a ring taken from the game's own art (gold, bronze or dragon): a bag while there is still loot to take, the Skinning icon once the corpse is emptied and you are able to skin it.
+- **Only what you can actually do** — no Skinning profession, or a skill too low for that beast? The Skinning icon stays away.
 - **Your choice of icon** — the logo and the eight raid icons are available too.
 
 ![A raid icon above a skinnable corpse](docs/assets/beacon.png)
@@ -34,7 +35,6 @@ Icons, ring style, size, height above the corpse, opacity, pulsing animation, al
 - The corpse has to be **on screen**.
 - The range slider goes up to 100 yards, but the game decides the real limit; expect a few dozen yards.
 - It does not draw an arrow or a map pin: the game gives addons no position for a corpse.
-- Behaviour **while you are in combat** has not been verified yet: the icon may only appear once the fight is over.
 
 ## Settings it changes
 

@@ -177,22 +177,46 @@ ns.beaconIcon = display
 local lastSound = 0
 ns.testUntil = 0
 
-local function isSkinnable(unit)
+-- Lit la ligne « Dépeçable » de l'infobulle. Le jeu l'écrit en rouge quand le joueur ne peut pas
+-- dépecer ce cadavre (pas le métier, ou niveau de métier trop bas).
+local function skinLine(unit)
 	local data = C_TooltipInfo and C_TooltipInfo.GetUnit(unit)
 	for _, line in ipairs(data and data.lines or {}) do
 		if line.leftText == UNIT_SKINNABLE_LEATHER then
-			return true
+			local c = line.leftColor
+			return true, (c and c.r > 0.9 and c.g < 0.4 and c.b < 0.4) or false
 		end
 	end
-	return false
+	return false, false
+end
+
+-- Reste-t-il du butin à prendre sur ce cadavre ? nil quand le client ne le dit pas.
+local function hasLoot(unit)
+	local guid = UnitGUID(unit)
+	if not guid or not CanLootUnit or (issecretvalue and issecretvalue(guid)) then return nil end
+	return (CanLootUnit(guid)) and true or false
+end
+
+-- Que montrer sur un cadavre ? "loot" tant qu'il reste du butin à prendre (il faut le vider
+-- avant de dépecer), "skin" quand le joueur peut vraiment le dépecer, rien sinon.
+-- loot : true, false, ou nil si inconnu ; dans ce dernier cas on garde l'icône de butin plutôt
+-- que de cacher un cadavre que le jeu propose quand même.
+function ns.Classify(loot, skinnable, cannotSkin)
+	if loot then return "loot" end
+	if skinnable and not cannotSkin then return "skin" end
+	if loot == nil then return "loot" end
+	return nil
 end
 
 -- Seul point de contact avec l'unité du jeu : renvoie la plaque de nom du cadavre proposé par le
--- jeu, et s'il est dépeçable. La suite de tests (tests/ingame.sh) le remplace pour simuler un cadavre.
+-- jeu, et vrai s'il est à dépecer (faux : butin à prendre). Rien si le cadavre n'offre plus rien
+-- au joueur. La suite de tests (tests/ingame.sh) le remplace pour simuler un cadavre.
 function ns.Probe()
 	local plate = C_NamePlate.GetNamePlateForUnit(UNIT)
 	if not plate or not UnitIsDead(UNIT) then return nil end
-	return plate, isSkinnable(UNIT)
+	local kind = ns.Classify(hasLoot(UNIT), skinLine(UNIT))
+	if not kind then return nil end
+	return plate, kind == "skin"
 end
 
 local function refresh()

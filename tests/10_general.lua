@@ -32,6 +32,15 @@ T.check("Dépeçables seulement décoché -> réglage faux", db.skinOnly == fals
 T.sim.present = false
 ns.Refresh()
 T.check("cadavre ramassé (disparu) -> balise masquée", not b:IsShown())
+-- Choix de l'icône selon ce que le cadavre offre au joueur.
+local C = ns.Classify
+T.check("butin à prendre + dépeçable -> icône de butin d'abord", C(true, true, false) == "loot")
+T.check("butin à prendre, non dépeceur -> icône de butin, pas de dépeçage", C(true, true, true) == "loot")
+T.check("vidé + dépeçable par le joueur -> icône de dépeçage", C(false, true, false) == "skin")
+T.check("vidé + dépeçable mais pas par le joueur (ligne rouge) -> rien", C(false, true, true) == nil)
+T.check("vidé + non dépeçable -> rien", C(false, false, false) == nil)
+T.check("butin inconnu + dépeçable par le joueur -> dépeçage", C(nil, true, false) == "skin")
+T.check("butin inconnu + pas dépeçable par le joueur -> butin (on ne cache pas)", C(nil, true, true) == "loot" and C(nil, false, false) == "loot")
 local plates = C_NamePlate.GetNamePlates()
 if plates[1] then
 	T.sim.present, T.sim.plate = true, plates[1]
