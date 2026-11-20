@@ -49,6 +49,7 @@ Type `/cb`, or open Options → AddOns → Corpse Beacon.
 - The corpse has to be **on screen**
 - The range slider goes up to 100 yards, but the game decides the real limit; expect a few dozen yards
 - No arrow, no map pin: the game gives addons no position for a corpse
+- Behaviour **while you are in combat** has not been verified yet: the icon may only appear once the fight is over
 
 ---
 

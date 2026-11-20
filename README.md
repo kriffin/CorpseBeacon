@@ -27,6 +27,7 @@ Icons, size, height above the corpse, opacity, pulsing animation, alert sound, d
 - The corpse has to be **on screen**.
 - The range slider goes up to 100 yards, but the game decides the real limit; expect a few dozen yards.
 - It does not draw an arrow or a map pin: the game gives addons no position for a corpse.
+- Behaviour **while you are in combat** has not been verified yet: the icon may only appear once the fight is over.
 
 ## Settings it changes
 
