@@ -1,0 +1,23 @@
+## Interface: 16001
+## Title: Corpse Beacon
+## Notes: Shows a large icon above the nearest skinnable or lootable corpse.
+## Notes-frFR: Affiche une grande icône au-dessus du cadavre dépeçable ou à butin le plus proche.
+## Notes-deDE: Zeigt ein großes Symbol über dem nächsten häutbaren oder plünderbaren Kadaver.
+## Notes-esES: Muestra un icono grande sobre el cadáver desollable o con botín más cercano.
+## Notes-esMX: Muestra un icono grande sobre el cadáver desollable o con botín más cercano.
+## Notes-itIT: Mostra una grande icona sopra il cadavere scuoiabile o con bottino più vicino.
+## Notes-ptBR: Mostra um ícone grande acima do cadáver esfolável ou com saque mais próximo.
+## Notes-ptPT: Mostra um ícone grande acima do cadáver esfolável ou com saque mais próximo.
+## Notes-ruRU: Показывает большой значок над ближайшим трупом, с которого можно снять шкуру или забрать добычу.
+## Notes-koKR: 가장 가까운 무두질 가능하거나 전리품이 있는 시체 위에 큰 아이콘을 표시합니다.
+## Notes-zhCN: 在最近的可剥皮或可拾取的尸体上方显示一个大图标。
+## Notes-zhTW: 在最近的可剝皮或可拾取的屍體上方顯示一個大圖示。
+## Author: kriffin
+## Version: 1.0.0
+## IconTexture: Interface\AddOns\CorpseBeacon\media\logo
+## AddonCompartmentFunc: CorpseBeacon_OnAddonCompartmentClick
+## SavedVariables: CorpseBeaconDB
+
+Locales.lua
+CorpseBeacon.lua
+Options.lua

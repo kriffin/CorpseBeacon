@@ -1,0 +1,16 @@
+# Archives locales
+*.zip
+
+# Écrit par le workflow de publication
+RELEASE_NOTES.md
+
+# IDE / OS
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Cache local de graft et réglages Claude Code, hors addon
+/graft/
+/.claude/

@@ -1,0 +1,16 @@
+package-as: CorpseBeacon
+
+enable-nolib-creation: no
+
+# Written by the Release workflow from this version's CHANGES.md section
+manual-changelog:
+  filename: RELEASE_NOTES.md
+  markup-type: markdown
+
+ignore:
+  - docs
+  - tests
+  - .github
+  - CHANGES.md
+  - RELEASE_NOTES.md
+  - media/logo.svg
