@@ -23,7 +23,20 @@ T.sim.skinnable = true
 ns.Refresh()
 T.check("cadavre dépeçable -> icône du métier Dépeçage, ronde, dans l'anneau", T.tex:GetTexture() == T.texOf(ns.IconTexture("skinning")) and T.icon.ring:IsShown() and T.icon.masked == true)
 T.check("icône du dépeçage = celle du sort 8613 du jeu", ns.IconTexture("skinning") == C_Spell.GetSpellTexture(8613) and ns.Icon("skinning").name == C_Spell.GetSpellName(8613))
-T.check("anneau = texture de l'addon chargée", T.icon.ring:GetTexture() ~= nil and T.icon.ring:GetTexture() == T.texOf("Interface\\AddOns\\CorpseBeacon\\media\\ring"))
+local badRing = {}
+for _, ring in ipairs(ns.RINGS) do
+	local picked = T.pick(W.ring, ring.key)
+	ns.Refresh()
+	local r = T.icon.ring
+	local drawn = ring.atlas and (r:GetAtlas() == ring.atlas) or (r:GetTexture() ~= nil and r:GetTexture() == T.texOf(ring.file))
+	local sized = math.abs(r:GetWidth() - db.size * ring.scale) < 0.6 and math.abs(T.tex:GetWidth() - db.size * ring.icon) < 0.6
+	if not (picked and db.ring == ring.key and r:IsShown() and drawn and sized and (W.ring:GetText() or "") == ring.name) then
+		badRing[#badRing + 1] = ring.key .. "(" .. tostring(db.ring) .. "," .. tostring(drawn) .. "," .. tostring(sized) .. ")"
+	end
+end
+T.check("les " .. #ns.RINGS .. " styles d'anneau (textures du jeu) : choix, dessin, taille de l'anneau et de l'icône", #badRing == 0, table.concat(badRing, " "))
+T.pick(W.ring, "gold")
+ns.Refresh()
 T.sim.skinnable = false
 ns.Refresh()
 T.check("cadavre à butin -> icône de sac dans l'anneau", T.tex:GetTexture() == T.texOf(ns.IconTexture("loot")) and T.icon.ring:IsShown())

@@ -8,6 +8,7 @@ T.set(W.pulse, false)
 T.pick(W.iconSkin, "logo")
 T.pick(W.iconLoot, "raid7")
 T.pick(W.soundId, 888)
+T.pick(W.ring, "dragon")
 W.size:SetValue(200)
 W.offset:SetValue(100)
 W.alpha:SetValue(0.5)
@@ -18,7 +19,7 @@ local bad = {}
 for k, v in pairs(ns.DEFAULTS) do
 	if db[k] ~= v then bad[#bad + 1] = k .. "=" .. tostring(db[k]) end
 end
-T.check("Réglages par défaut -> les 11 réglages reviennent", #bad == 0, table.concat(bad, " "))
+T.check("Réglages par défaut -> tous les réglages reviennent", #bad == 0, table.concat(bad, " "))
 local w = W.enabled:GetChecked() and not W.skinOnly:GetChecked() and W.sound:GetChecked() and W.pulse:GetChecked()
 	and W.size:GetValue() == 110 and W.offset:GetValue() == 0 and W.range:GetValue() == 60 and math.abs(W.alpha:GetValue() - 1) < 0.01
 T.check("Réglages par défaut -> cases et curseurs resynchronisés", w and true or false)

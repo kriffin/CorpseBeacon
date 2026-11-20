@@ -20,6 +20,7 @@ ns.DEFAULTS = {
 	soundId = 8959,
 	iconSkin = "skinning",
 	iconLoot = "loot",
+	ring = "gold",
 	size = 110,
 	offset = 0,
 	alpha = 1,
@@ -43,6 +44,22 @@ ns.ICONS = {
 }
 for _, n in ipairs({ 8, 1, 2, 3, 4, 5, 6, 7 }) do
 	ns.ICONS[#ns.ICONS + 1] = { key = "raid" .. n, texture = RAID_ICON .. n, name = _G["RAID_TARGET_" .. n] or ("Raid " .. n) }
+end
+
+-- Anneaux autour des icônes rondes : des textures du jeu, pour rester dans son style.
+-- scale = taille de la texture par rapport à la balise (ces textures ont une marge) ;
+-- icon = diamètre de l'icône ronde, glissée juste sous le bord intérieur de l'anneau.
+ns.RINGS = {
+	{ key = "gold", name = L.RING_GOLD, file = "Interface\\COMMON\\GoldRing", scale = 1.14, icon = 0.80 },
+	{ key = "bronze", name = L.RING_BRONZE, atlas = "Artifacts-PerkRing-Final", scale = 1.16, icon = 0.79 },
+	{ key = "dragon", name = L.RING_DRAGON, atlas = "Artifacts-PerkRing-GoldMedal", scale = 1.15, icon = 0.62 },
+}
+
+function ns.Ring(key)
+	for _, ring in ipairs(ns.RINGS) do
+		if ring.key == key and (not ring.atlas or C_Texture.GetAtlasInfo(ring.atlas)) then return ring end
+	end
+	return ns.RINGS[1]
 end
 
 -- Sons d'alerte : tous vérifiés présents sur le client Forever (PlaySound renvoie vrai).
@@ -79,9 +96,8 @@ function ns.IconTexture(key)
 end
 
 -- Un affichage d'icône, utilisé par la balise et par l'aperçu des options : l'icône, et pour les
--- icônes « ringed » un masque rond et un anneau épais par-dessus. La pulsation anime le corps
+-- icônes « ringed » un masque rond et un anneau du jeu par-dessus. La pulsation anime le corps
 -- entier ; l'opacité réglée reste portée par le cadre parent, les deux se multiplient.
-local RING_INSET = 0.13 -- l'icône ronde s'arrête sous le bord intérieur de l'anneau
 function ns.CreateIcon(parent)
 	local d = { body = CreateFrame("Frame", nil, parent) }
 	d.body:SetAllPoints(parent)
@@ -90,9 +106,7 @@ function ns.CreateIcon(parent)
 	d.mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
 	d.mask:SetAllPoints(d.tex)
 	d.ring = d.body:CreateTexture(nil, "OVERLAY")
-	d.ring:SetTexture(MEDIA .. "ring")
-	d.ring:SetAllPoints(d.body)
-	d.ring:SetVertexColor(1, 0.82, 0)
+	d.ring:SetPoint("CENTER")
 	d.ring:Hide()
 	d.pulse = d.body:CreateAnimationGroup()
 	d.pulse:SetLooping("BOUNCE")
@@ -109,14 +123,20 @@ function ns.CreateIcon(parent)
 		self.tex:SetTexture(icon.texture)
 		self.tex:ClearAllPoints()
 		if icon.ringed then
-			local w = size * RING_INSET
-			self.tex:SetPoint("TOPLEFT", w, -w)
-			self.tex:SetPoint("BOTTOMRIGHT", -w, w)
+			local ring = ns.Ring(ns.db.ring)
+			local side = size * ring.icon
+			self.tex:SetPoint("CENTER")
+			self.tex:SetSize(side, side)
 			self.tex:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- rogne le cadre gris des icônes du jeu
 			if not self.masked then
 				self.tex:AddMaskTexture(self.mask)
 				self.masked = true
 			end
+			if self.ringKey ~= ring.key then
+				if ring.atlas then self.ring:SetAtlas(ring.atlas) else self.ring:SetTexture(ring.file) end
+				self.ringKey = ring.key
+			end
+			self.ring:SetSize(size * ring.scale, size * ring.scale)
 		else
 			self.tex:SetAllPoints(self.body)
 			self.tex:SetTexCoord(0, 1, 0, 1)

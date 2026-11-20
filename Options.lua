@@ -146,12 +146,18 @@ function ns.InitOptions()
 	label(panel, L.ICON_LOOT, COL_LEFT, -262)
 	dropdown(panel, COL_LEFT, -278, 240, icons, "iconLoot")
 
+	label(panel, L.RING_STYLE, COL_LEFT, -312)
+	local rings = {}
+	for _, ring in ipairs(ns.RINGS) do
+		rings[#rings + 1] = { name = ring.name, value = ring.key }
+	end
+	dropdown(panel, COL_LEFT, -328, 240, rings, "ring")
+
 	local function plain(v) return tostring(v) end
 	local function percent(v) return math.floor(v * 100 + 0.5) .. " %" end
-	slider(panel, L.SIZE, COL_LEFT, -322, "size", 24, 300, 2, plain)
-	slider(panel, L.OFFSET, COL_LEFT, -370, "offset", 0, 200, 5, plain)
-	slider(panel, L.ALPHA, COL_LEFT, -418, "alpha", 0.2, 1, 0.05, percent)
-	checkbox(panel, L.PULSE, COL_LEFT, -464, "pulse")
+	slider(panel, L.SIZE, COL_LEFT, -372, "size", 24, 300, 2, plain)
+	slider(panel, L.OFFSET, COL_LEFT, -420, "offset", 0, 200, 5, plain)
+	slider(panel, L.ALPHA, COL_LEFT, -468, "alpha", 0.2, 1, 0.05, percent)
 
 	-- Colonne droite : aperçu, son, détection
 	header(panel, L.PREVIEW, COL_RIGHT, -96)
@@ -190,32 +196,34 @@ function ns.InitOptions()
 		end
 	end
 
-	header(panel, L.SOUND, COL_RIGHT, -246)
-	checkbox(panel, L.SOUND_ENABLE, COL_RIGHT, -268, "sound")
-	label(panel, L.SOUND_CHOICE, COL_RIGHT, -306)
+	checkbox(panel, L.PULSE, COL_RIGHT, -236, "pulse")
+
+	header(panel, L.SOUND, COL_RIGHT, -274)
+	checkbox(panel, L.SOUND_ENABLE, COL_RIGHT, -296, "sound")
+	label(panel, L.SOUND_CHOICE, COL_RIGHT, -334)
 	local sounds = {}
 	for _, sound in ipairs(ns.SOUNDS) do
 		sounds[#sounds + 1] = { name = sound.name, value = sound.id }
 	end
-	local soundDrop = dropdown(panel, COL_RIGHT, -322, 182, sounds, "soundId", ns.PlayAlert)
+	local soundDrop = dropdown(panel, COL_RIGHT, -350, 182, sounds, "soundId", ns.PlayAlert)
 	local test = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
 	test:SetPoint("LEFT", soundDrop, "RIGHT", 8, 0)
 	test:SetSize(60, 24)
 	test:SetText(L.TEST)
 	test:SetScript("OnClick", ns.PlayAlert)
 
-	header(panel, L.DETECTION, COL_RIGHT, -366)
-	slider(panel, L.RANGE, COL_RIGHT, -392, "range", 5, 100, 5, plain, function()
+	header(panel, L.DETECTION, COL_RIGHT, -392)
+	slider(panel, L.RANGE, COL_RIGHT, -416, "range", 5, 100, 5, plain, function()
 		if ns.db.enabled then ns.ApplyCVars() end
 	end)
 	local note = panel:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-	note:SetPoint("TOPLEFT", COL_RIGHT, -444)
+	note:SetPoint("TOPLEFT", COL_RIGHT, -466)
 	note:SetWidth(250)
 	note:SetJustifyH("LEFT")
 	note:SetText(L.RANGE_NOTE)
 
 	local reset = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-	reset:SetPoint("TOPLEFT", COL_LEFT, -504)
+	reset:SetPoint("TOPLEFT", COL_LEFT, -524)
 	reset:SetSize(200, 24)
 	reset:SetText(L.RESET)
 	reset:SetScript("OnClick", function()
@@ -226,7 +234,7 @@ function ns.InitOptions()
 	end)
 
 	local onTarget = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-	onTarget:SetPoint("TOPLEFT", COL_RIGHT, -504)
+	onTarget:SetPoint("TOPLEFT", COL_RIGHT, -524)
 	onTarget:SetSize(250, 24)
 	onTarget:SetText(L.TEST_TARGET)
 	onTarget:SetScript("OnClick", ns.TestOnTarget)
