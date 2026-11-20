@@ -10,20 +10,27 @@ for _, key in ipairs({ "iconSkin", "iconLoot" }) do
 		local want = T.texOf(icon.texture)
 		local got = T.tex:GetTexture()
 		local shown = W[key]:GetText() or ""
-		if not (picked and db[key] == icon.key and want ~= nil and got == want and shown:find(icon.name, 1, true)) then
+		local ringOk = T.icon.ring:IsShown() == (icon.ringed and true or false)
+		if not (picked and db[key] == icon.key and want ~= nil and got == want and ringOk and shown:find(icon.name, 1, true)) then
 			bad[#bad + 1] = icon.key .. "(" .. tostring(db[key]) .. "," .. tostring(got) .. "/" .. tostring(want) .. ")"
 		end
 	end
 	T.check(key .. " : les " .. #ns.ICONS .. " icônes se choisissent et s'affichent sur la balise", #bad == 0, table.concat(bad, " "))
 end
-T.pick(W.iconSkin, "raid8")
-T.pick(W.iconLoot, "raid1")
+T.pick(W.iconSkin, "skinning")
+T.pick(W.iconLoot, "loot")
 T.sim.skinnable = true
 ns.Refresh()
-T.check("cadavre dépeçable -> icône « dépeçable » (crâne)", T.tex:GetTexture() == T.texOf(ns.IconTexture("raid8")))
+T.check("cadavre dépeçable -> icône du métier Dépeçage, ronde, dans l'anneau", T.tex:GetTexture() == T.texOf(ns.IconTexture("skinning")) and T.icon.ring:IsShown() and T.icon.masked == true)
+T.check("icône du dépeçage = celle du sort 8613 du jeu", ns.IconTexture("skinning") == C_Spell.GetSpellTexture(8613) and ns.Icon("skinning").name == C_Spell.GetSpellName(8613))
+T.check("anneau = texture de l'addon chargée", T.icon.ring:GetTexture() ~= nil and T.icon.ring:GetTexture() == T.texOf("Interface\\AddOns\\CorpseBeacon\\media\\ring"))
 T.sim.skinnable = false
 ns.Refresh()
-T.check("cadavre à butin -> icône « butin » (étoile)", T.tex:GetTexture() == T.texOf(ns.IconTexture("raid1")))
+T.check("cadavre à butin -> icône de sac dans l'anneau", T.tex:GetTexture() == T.texOf(ns.IconTexture("loot")) and T.icon.ring:IsShown())
+T.pick(W.iconLoot, "raid1")
+ns.Refresh()
+T.check("icône de raid -> pas d'anneau, pas de masque rond", not T.icon.ring:IsShown() and T.icon.masked == false)
+T.pick(W.iconLoot, "loot")
 T.check("le logo de l'addon se charge comme texture", T.texOf(ns.LOGO) ~= nil)
 T.sim.skinnable = true
 ns.Refresh()

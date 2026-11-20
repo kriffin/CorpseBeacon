@@ -18,8 +18,8 @@ ns.DEFAULTS = {
 	skinOnly = false,
 	sound = true,
 	soundId = 8959,
-	iconSkin = "raid8",
-	iconLoot = "raid1",
+	iconSkin = "skinning",
+	iconLoot = "loot",
 	size = 110,
 	offset = 0,
 	alpha = 1,
@@ -27,8 +27,20 @@ ns.DEFAULTS = {
 	range = 60,
 }
 
--- Icônes proposées : le logo, puis les huit icônes de raid (noms fournis par le client).
-ns.ICONS = { { key = "logo", texture = ns.LOGO, name = L.ICON_LOGO } }
+-- Icônes proposées. Les deux premières sont des icônes du jeu, affichées rondes dans un anneau
+-- épais : celle du métier Dépeçage (sort 8613, nom fourni par le client) et un sac pour le butin.
+-- Viennent ensuite le logo et les huit icônes de raid, affichés tels quels.
+local SKINNING_SPELL = 8613
+ns.ICONS = {
+	{
+		key = "skinning",
+		ringed = true,
+		texture = (C_Spell and C_Spell.GetSpellTexture and C_Spell.GetSpellTexture(SKINNING_SPELL)) or "Interface\\Icons\\INV_Misc_Pelt_Wolf_01",
+		name = (C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(SKINNING_SPELL)) or "Skinning",
+	},
+	{ key = "loot", ringed = true, texture = "Interface\\Icons\\INV_Misc_Bag_08", name = LOOT or "Loot" },
+	{ key = "logo", texture = ns.LOGO, name = L.ICON_LOGO },
+}
 for _, n in ipairs({ 8, 1, 2, 3, 4, 5, 6, 7 }) do
 	ns.ICONS[#ns.ICONS + 1] = { key = "raid" .. n, texture = RAID_ICON .. n, name = _G["RAID_TARGET_" .. n] or ("Raid " .. n) }
 end
@@ -55,11 +67,77 @@ ns.SOUNDS = {
 	{ id = 888, name = L.S_LEVELUP },
 }
 
-function ns.IconTexture(key)
+function ns.Icon(key)
 	for _, icon in ipairs(ns.ICONS) do
-		if icon.key == key then return icon.texture end
+		if icon.key == key then return icon end
 	end
-	return ns.ICONS[2].texture
+	return ns.ICONS[1]
+end
+
+function ns.IconTexture(key)
+	return ns.Icon(key).texture
+end
+
+-- Un affichage d'icône, utilisé par la balise et par l'aperçu des options : l'icône, et pour les
+-- icônes « ringed » un masque rond et un anneau épais par-dessus. La pulsation anime le corps
+-- entier ; l'opacité réglée reste portée par le cadre parent, les deux se multiplient.
+local RING_INSET = 0.13 -- l'icône ronde s'arrête sous le bord intérieur de l'anneau
+function ns.CreateIcon(parent)
+	local d = { body = CreateFrame("Frame", nil, parent) }
+	d.body:SetAllPoints(parent)
+	d.tex = d.body:CreateTexture(nil, "ARTWORK")
+	d.mask = d.body:CreateMaskTexture()
+	d.mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+	d.mask:SetAllPoints(d.tex)
+	d.ring = d.body:CreateTexture(nil, "OVERLAY")
+	d.ring:SetTexture(MEDIA .. "ring")
+	d.ring:SetAllPoints(d.body)
+	d.ring:SetVertexColor(1, 0.82, 0)
+	d.ring:Hide()
+	d.pulse = d.body:CreateAnimationGroup()
+	d.pulse:SetLooping("BOUNCE")
+	local fade = d.pulse:CreateAnimation("Alpha")
+	fade:SetFromAlpha(1)
+	fade:SetToAlpha(0.45)
+	fade:SetDuration(0.6)
+	fade:SetSmoothing("IN_OUT")
+
+	-- size : côté de l'affichage, passé par l'appelant. On ne mesure pas le cadre : accrochée à
+	-- une plaque de nom, la balise devient une région restreinte que le client refuse de mesurer.
+	function d:Set(key, size)
+		local icon = ns.Icon(key)
+		self.tex:SetTexture(icon.texture)
+		self.tex:ClearAllPoints()
+		if icon.ringed then
+			local w = size * RING_INSET
+			self.tex:SetPoint("TOPLEFT", w, -w)
+			self.tex:SetPoint("BOTTOMRIGHT", -w, w)
+			self.tex:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- rogne le cadre gris des icônes du jeu
+			if not self.masked then
+				self.tex:AddMaskTexture(self.mask)
+				self.masked = true
+			end
+		else
+			self.tex:SetAllPoints(self.body)
+			self.tex:SetTexCoord(0, 1, 0, 1)
+			if self.masked then
+				self.tex:RemoveMaskTexture(self.mask)
+				self.masked = false
+			end
+		end
+		self.ring:SetShown(icon.ringed and true or false)
+	end
+
+	function d:SetPulse(on)
+		if on then
+			if not self.pulse:IsPlaying() then self.pulse:Play() end
+		else
+			self.pulse:Stop()
+			self.body:SetAlpha(1)
+		end
+	end
+
+	return d
 end
 
 function ns.Say(msg)
@@ -73,17 +151,8 @@ end
 local beacon = CreateFrame("Frame", "CorpseBeaconFrame", UIParent)
 beacon:SetFrameStrata("HIGH")
 beacon:Hide()
-local tex = beacon:CreateTexture(nil, "OVERLAY")
-tex:SetAllPoints()
-
--- La pulsation anime la texture, l'opacité choisie reste portée par le cadre : les deux se multiplient.
-local pulse = tex:CreateAnimationGroup()
-pulse:SetLooping("BOUNCE")
-local fade = pulse:CreateAnimation("Alpha")
-fade:SetFromAlpha(1)
-fade:SetToAlpha(0.45)
-fade:SetDuration(0.6)
-fade:SetSmoothing("IN_OUT")
+local display = ns.CreateIcon(beacon)
+ns.beaconIcon = display
 
 local lastSound = 0
 ns.testUntil = 0
@@ -128,9 +197,9 @@ local function refresh()
 		beacon:Hide()
 		return
 	end
-	tex:SetTexture(ns.IconTexture(skinnable and db.iconSkin or db.iconLoot))
 	beacon:SetSize(db.size, db.size)
 	beacon:SetAlpha(db.alpha)
+	display:Set(skinnable and db.iconSkin or db.iconLoot, db.size)
 	beacon:ClearAllPoints()
 	if plate then
 		beacon:SetParent(plate)
@@ -140,12 +209,7 @@ local function refresh()
 		beacon:SetParent(UIParent)
 		beacon:SetPoint("CENTER", UIParent, "CENTER", 0, 140)
 	end
-	if db.pulse then
-		if not pulse:IsPlaying() then pulse:Play() end
-	else
-		pulse:Stop()
-		tex:SetAlpha(1)
-	end
+	display:SetPulse(db.pulse)
 	if not beacon:IsShown() then
 		beacon:Show()
 		if db.sound and GetTime() - lastSound > 3 then

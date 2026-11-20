@@ -23,7 +23,7 @@ local w = W.enabled:GetChecked() and not W.skinOnly:GetChecked() and W.sound:Get
 	and W.size:GetValue() == 110 and W.offset:GetValue() == 0 and W.range:GetValue() == 60 and math.abs(W.alpha:GetValue() - 1) < 0.01
 T.check("Réglages par défaut -> cases et curseurs resynchronisés", w and true or false)
 local names = (W.iconSkin:GetText() or "") .. "|" .. (W.iconLoot:GetText() or "") .. "|" .. (W.soundId:GetText() or "")
-T.check("Réglages par défaut -> listes resynchronisées", names:find(RAID_TARGET_8, 1, true) and names:find(RAID_TARGET_1, 1, true) and names:find(ns.SOUNDS[1].name, 1, true) and true or false, names)
+T.check("Réglages par défaut -> listes resynchronisées", names:find(ns.Icon("skinning").name, 1, true) and names:find(ns.Icon("loot").name, 1, true) and names:find(ns.SOUNDS[1].name, 1, true) and true or false, names)
 T.check("Réglages par défaut -> portée du jeu remise à 60", tonumber(GetCVar("SoftTargetInteractRange")) == 60)
 -- Commandes
 SlashCmdList.CORPSEBEACON("off")

@@ -15,16 +15,20 @@ You are a skinner. There is a dead tiger somewhere in the undergrowth. You know 
 
 **Corpse Beacon puts a large icon above the nearest corpse you can skin or loot.**
 
-![The beacon above a skinnable corpse](https://github.com/kriffin/CorpseBeacon/raw/main/docs/assets/beacon.png)
+![The beacon: the Skinning icon in a thick ring](https://github.com/kriffin/CorpseBeacon/raw/main/docs/assets/beacon-ring.png)
 
 ---
 
 ## What it does
 
-- **A skull above skinnable corpses, a star above corpses that only hold loot** — both icons are yours to choose
+- **The Skinning icon in a thick gold ring above skinnable corpses, a bag above corpses that only hold loot** — or pick the logo or any raid icon instead
 - **Already looted, still skinnable** — a corpse emptied of its loot keeps its beacon for as long as the game still offers it for skinning
 - **A sound when a corpse is found**, picked from 18 game sounds
 - **It clears itself** — when the game stops offering the corpse, the icon goes away on its own
+
+![A raid icon above a skinnable corpse](https://github.com/kriffin/CorpseBeacon/raw/main/docs/assets/beacon.png)
+
+*Above a real corpse, here with the skull raid icon.*
 
 ---
 

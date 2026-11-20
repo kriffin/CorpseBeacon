@@ -4,11 +4,18 @@
 
 A World of Warcraft addon for skinners: it puts a large icon above the nearest corpse you can skin or loot, so you find it in the undergrowth instead of combing the bushes.
 
-![The beacon above a skinnable corpse](docs/assets/beacon.png)
+![The beacon: the Skinning icon in a thick ring](docs/assets/beacon-ring.png)
+
+*The default beacon, shown with the 10-second test button.*
 
 ## What it does
 
-- **One corpse, clearly marked** — the nearest corpse the game lets you interact with gets an icon above it: a skull when it is skinnable, a star when it only holds loot.
+- **One corpse, clearly marked** — the nearest corpse the game lets you interact with gets an icon above it, round, inside a thick gold ring: the Skinning icon when it is skinnable, a bag when it only holds loot.
+- **Your choice of icon** — the logo and the eight raid icons are available too.
+
+![A raid icon above a skinnable corpse](docs/assets/beacon.png)
+
+*Above a real corpse, here with the skull raid icon.*
 - **Already looted, still skinnable** — a corpse emptied of its loot keeps its beacon for as long as the game still offers it for skinning
 - **A sound when a corpse is found**, chosen from 18 game sounds.
 - **It clears itself** — when the game stops offering the corpse, the icon goes away on its own

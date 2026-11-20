@@ -172,16 +172,9 @@ function ns.InitOptions()
 		local holder = CreateFrame("Frame", nil, box)
 		holder:SetSize(96, 96)
 		holder:SetPoint("CENTER", box, "CENTER", i == 1 and -60 or 60, 0)
-		local t = holder:CreateTexture(nil, "ARTWORK")
-		t:SetPoint("CENTER")
-		local group = t:CreateAnimationGroup()
-		group:SetLooping("BOUNCE")
-		local a = group:CreateAnimation("Alpha")
-		a:SetFromAlpha(1)
-		a:SetToAlpha(0.45)
-		a:SetDuration(0.6)
-		a:SetSmoothing("IN_OUT")
-		previews[i] = { key = key, holder = holder, texture = t, group = group }
+		local inner = CreateFrame("Frame", nil, holder)
+		inner:SetPoint("CENTER")
+		previews[i] = { key = key, holder = holder, inner = inner, display = ns.CreateIcon(inner) }
 	end
 
 	function ns.UpdatePreview()
@@ -189,16 +182,11 @@ function ns.InitOptions()
 		-- L'aperçu garde les proportions : la taille réglée est ramenée à 96 px au maximum.
 		local side = math.max(16, math.min(96, db.size * 96 / 300 + 24))
 		for _, p in ipairs(previews) do
-			p.texture:SetTexture(ns.IconTexture(db[p.key]))
-			p.texture:SetSize(side, side)
+			p.inner:SetSize(side, side)
+			p.display:Set(db[p.key], side)
+			p.display:SetPulse(db.pulse)
 			p.holder:SetAlpha(db.alpha)
 			p.holder:SetShown(p.key == "iconSkin" or not db.skinOnly)
-			if db.pulse then
-				if not p.group:IsPlaying() then p.group:Play() end
-			else
-				p.group:Stop()
-				p.texture:SetAlpha(1)
-			end
 		end
 	end
 

@@ -35,16 +35,16 @@ for _, v in ipairs({ 5, 100, 60 }) do
 	if not (db.range == v and tonumber(GetCVar("SoftTargetInteractRange")) == v) then bad[#bad + 1] = v .. "->" .. tostring(db.range) .. "/" .. tostring(GetCVar("SoftTargetInteractRange")) end
 end
 T.check("Portée 5 / 100 / 60 -> réglage et réglage du jeu", #bad == 0, table.concat(bad, " "))
-local group = T.tex:GetAnimationGroups()
+local group = T.icon.pulse
 T.set(W.pulse, true)
 ns.Refresh()
 T.check("Pulsation cochée -> animation en cours", db.pulse == true and group:IsPlaying())
 W.pulse:Click()
-T.check("Pulsation décochée -> animation arrêtée, icône pleine", db.pulse == false and not group:IsPlaying() and near(T.tex:GetAlpha(), 1))
+T.check("Pulsation décochée -> animation arrêtée, icône pleine", db.pulse == false and not group:IsPlaying() and near(T.icon.body:GetAlpha(), 1))
 W.pulse:Click()
 T.check("Pulsation recochée -> animation relancée", db.pulse == true and group:IsPlaying())
 local p = W.previews
-T.check("Aperçu -> même icône que la balise", p[1].texture:GetTexture() == T.tex:GetTexture())
+T.check("Aperçu -> même icône et même anneau que la balise", p[1].display.tex:GetTexture() == T.tex:GetTexture() and p[1].display.ring:IsShown() == T.icon.ring:IsShown())
 W.alpha:SetValue(0.5)
 T.check("Aperçu -> suit l'opacité", near(p[1].holder:GetAlpha(), 0.5))
 W.alpha:SetValue(1)

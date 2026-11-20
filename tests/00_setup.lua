@@ -34,7 +34,8 @@ if not T.hooked then
 	hooksecurefunc("PlaySound", function(id) if CBT and CBT.sounds then CBT.sounds[#CBT.sounds + 1] = id end end)
 end
 T.beacon = CorpseBeaconFrame
-T.tex = CorpseBeaconFrame:GetRegions()
+T.icon = ns.beaconIcon
+T.tex = ns.beaconIcon.tex
 T.ref = UIParent:CreateTexture()
 T.ref:Hide()
 function T.texOf(path)
